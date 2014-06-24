@@ -11,12 +11,11 @@ feel free to use this code/project however you'd like.
 (I'm an amateur programmer so I wouldn't recommend this as a source to learn from yourself).
 
 I'd appreciate any pointers or help given. This project is mainly being 
-used as a learning experience to base future projects on. 
-----------------------
+used as a learning experience to base future projects on.
 
 
 Currently Implemented:
-
+----------------------
 -Rudimentary tile map
 -loading a small sprite sheet
 -camera pan/zoom
