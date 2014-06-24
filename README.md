@@ -1,7 +1,8 @@
 ProjectFlounder
 ===============
 
-A game experiment to learn more about C++. 
+A game experiment to learn more about C++.  
+Uses SDL 2.0 library: https://www.libsdl.org/download-2.0.php
 
 
 *Please note*
