@@ -3,7 +3,9 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <list>
 #include <algorithm>
+#include <functional>
 
 #include "definitions.h"
 #include "tile.h"
@@ -371,7 +373,7 @@ vector<pathCoord> TileMap::pathFind(double startX, double startY, double endX, d
 
 	int endTileElement = tilesHigh*mapW + tilesWide;
 
-	//create vectors to store the path data
+	//create lists/vectors to store the path data
 	//pathTile and pathCoord are structs created in definitions.h
 	vector<pathTile> openCoordinates;
 	vector<pathTile> closedCoordinates;
@@ -411,9 +413,6 @@ vector<pathCoord> TileMap::pathFind(double startX, double startY, double endX, d
 			int tileElement = openCoordinates.front().tileElement;
 			int tileX = (tileElement%mapW) * blockW;
 			int tileY = tileElement/mapW * blockH;
-			int tileW = tileX + blockW;
-			int tileH = tileY + blockH;
-			SDL_Rect tileRect = {tileX, tileY, tileW, tileH};
 
 			if (getTileTraitAt(tileX, tileY, 0) != 1)
 			{
@@ -423,14 +422,46 @@ vector<pathCoord> TileMap::pathFind(double startX, double startY, double endX, d
 				//remove openCoordinates[i] from openCoordinates list
 				openCoordinates.erase(openCoordinates.begin());
 
-				//add surrounding tiles 
+				//ADD SURROUNDING TILES
+				//---------------------
 				int lastCoordinate = closedCoordinates.back().tileElement;
 				int lastDistance = closedCoordinates.back().distance+1;
+				
+				//tile to the left
+				int nextTileX = (tileX+blockW/2)-blockW;
+				int nextTileY = tileY+blockH/2;
+				int nextTileDistX = abs(endX-nextTileX);
+				int nextTileDistY = abs(endY-nextTileY);
+				int heuristic = nextTileDistX+nextTileDistY;
 
-				openCoordinates.push_back(pathTile(lastCoordinate-1, lastDistance));
-				openCoordinates.push_back(pathTile(lastCoordinate+1, lastDistance));
-				openCoordinates.push_back(pathTile(lastCoordinate-mapW, lastDistance));
-				openCoordinates.push_back(pathTile(lastCoordinate+mapW, lastDistance));
+				openCoordinates.push_back(pathTile(lastCoordinate-1, heuristic));
+
+				//tile to the right
+				nextTileX = (tileX+blockW/2)+blockW;
+				nextTileY = tileY+blockH/2;
+				nextTileDistX = abs(endX-nextTileX);
+				nextTileDistY = abs(endY-nextTileY);
+				heuristic = nextTileDistX+nextTileDistY;
+
+				openCoordinates.push_back(pathTile(lastCoordinate+1, heuristic));
+
+				//tile to the top
+				nextTileX = tileX+blockW/2;
+				nextTileY = (tileY+blockH/2)-blockH;
+				nextTileDistX = abs(endX-nextTileX);
+				nextTileDistY = abs(endY-nextTileY);
+				heuristic = nextTileDistX+nextTileDistY;
+
+				openCoordinates.push_back(pathTile(lastCoordinate-mapW, heuristic));
+
+				//tile to the bottom
+				nextTileX = tileX+blockW/2;
+				nextTileY = (tileY+blockH/2)+blockH;
+				nextTileDistX = abs(endX-nextTileX);
+				nextTileDistY = abs(endY-nextTileY);
+				heuristic = nextTileDistX+nextTileDistY;
+
+				openCoordinates.push_back(pathTile(lastCoordinate+mapW, heuristic));
 			}
 			else
 				openCoordinates.erase(openCoordinates.begin());
@@ -457,6 +488,9 @@ vector<pathCoord> TileMap::pathFind(double startX, double startY, double endX, d
 					}
 				}
 			}
+
+			//put the tiles with the lowest distances first
+			std::sort(openCoordinates.begin(), openCoordinates.end(), lessThanDistance());
 		}
 	}
 
@@ -542,6 +576,8 @@ vector<pathCoord> TileMap::pathFind(double startX, double startY, double endX, d
 			tileX = startX;
 			tileY = startY;
 			pathCoordinates.push_back(pathCoord(tileX, tileY, tileDistance));
+			pathFound = true;
+			break;
 		}
 		else
 		{
@@ -550,11 +586,13 @@ vector<pathCoord> TileMap::pathFind(double startX, double startY, double endX, d
 
 		//stop when you've backtracked and found a
 		//coordinate with the distance of 0
-		if (pathCoordinates.back().distance == 0)
+		/*
+		if (pathCoordinates.back().distance <= 0)
 		{
 			pathFound = true;
 			break;
 		}
+		*/
 	}
 	
 	//quickly flip the vector elements since they are listed

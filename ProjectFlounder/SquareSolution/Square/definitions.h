@@ -20,6 +20,14 @@ struct pathTile
 	pathTile(int element, int dist) : tileElement(element), distance(dist) {};
 };
 
+struct lessThanDistance
+{
+	bool operator() (const pathTile& tile1, const pathTile& tile2)
+	{
+		return (tile1.distance < tile2.distance);
+	}
+};
+
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
 #define FPS 60
