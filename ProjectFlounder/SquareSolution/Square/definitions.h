@@ -16,15 +16,16 @@ struct pathCoord
 struct pathTile
 {
 	int tileElement, distance;
+	double heuristic;
 
-	pathTile(int element, int dist) : tileElement(element), distance(dist) {};
+	pathTile(int element, int dist, double inHeuristic) : tileElement(element), distance(dist), heuristic(inHeuristic) {};
 };
 
-struct lessThanDistance
+struct lessThanHeuristic
 {
 	bool operator() (const pathTile& tile1, const pathTile& tile2)
 	{
-		return (tile1.distance < tile2.distance);
+		return (tile1.heuristic < tile2.heuristic);
 	}
 };
 
