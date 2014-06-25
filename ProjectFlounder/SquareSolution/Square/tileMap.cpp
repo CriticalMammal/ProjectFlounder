@@ -359,8 +359,6 @@ void TileMap::changeTileAt(int x, int y)
 
 vector<pathCoord> TileMap::pathFind(double startX, double startY, double endX, double endY)
 {
-	int hold; //delete after you remove cin for holds
-
 	//first let's figure out the tile array elements for the start and end
 	//that way you can create a path based on the tile positions
 	int tilesWide = startX/blockW;
@@ -372,9 +370,9 @@ vector<pathCoord> TileMap::pathFind(double startX, double startY, double endX, d
 	tilesHigh = endY/blockH;
 
 	int endTileElement = tilesHigh*mapW + tilesWide;
-	//cout << "end tile element: " << endTileElement << endl;
 
 	//create vectors to store the path data
+	//pathTile and pathCoord are structs created in definitions.h
 	vector<pathTile> openCoordinates;
 	vector<pathTile> closedCoordinates;
 	vector<pathCoord> pathCoordinates;
@@ -421,6 +419,7 @@ vector<pathCoord> TileMap::pathFind(double startX, double startY, double endX, d
 			{
 				//add this into the closed list
 				closedCoordinates.push_back(openCoordinates.front());
+
 				//remove openCoordinates[i] from openCoordinates list
 				openCoordinates.erase(openCoordinates.begin());
 
@@ -472,21 +471,6 @@ vector<pathCoord> TileMap::pathFind(double startX, double startY, double endX, d
 
 	pathCoordinates.push_back(pathCoord(endTileX + blockW/2, endTileY + blockH/2, tileDistance));
 
-	/*
-	//print tile for reference
-	cout << "PATH TILES" << endl << "____________________" << endl;
-	//cout << "tile: " << goodTile << "     distance: " << tileDistance << endl;
-		
-		
-	for (int i=0; i<closedCoordinates.size();i++)
-	{
-		cout << "tile: " << closedCoordinates[i].tileElement << ", " << 
-			"dist: " << closedCoordinates[i].distance << endl;
-	}
-	cout << endl << endl;
-	cin >> hold;
-	*/
-
 	while (!pathFound)
 	{
 		int leftTile = goodTile-1;
@@ -520,8 +504,6 @@ vector<pathCoord> TileMap::pathFind(double startX, double startY, double endX, d
 			}
 		}
 
-		
-
 		//find out which tile is the best move
 		int distArray[4] = {leftDist, rightDist, topDist, bottomDist};
 		int tempMinDist = distArray[0];
@@ -551,7 +533,6 @@ vector<pathCoord> TileMap::pathFind(double startX, double startY, double endX, d
 			}
 		}
 
-
 		int tileX = (goodTile%mapW) * blockW;
 		int tileY = goodTile/mapW * blockH;
 		tileDistance = tempMinDist;
@@ -566,10 +547,6 @@ vector<pathCoord> TileMap::pathFind(double startX, double startY, double endX, d
 		{
 			pathCoordinates.push_back(pathCoord(tileX + blockW/2, tileY + blockH/2, tileDistance));
 		}
-
-
-		//print tile for reference
-		//cout << "tile: " << goodTile << "     distance: " << tileDistance << endl;
 
 		//stop when you've backtracked and found a
 		//coordinate with the distance of 0

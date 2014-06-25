@@ -133,14 +133,6 @@ int main(int argc, char *args[])
 	nonPlayer->setX(25);
 	nonPlayer->setY(25);
 
-	/*
-	//print out path coordinates
-	cout << "\n\n";
-	for (int i=0; i<path.size(); i++)
-	{
-		cout << "x: " << path[i].x << "y: " << path[i].y << endl;
-	}
-	*/
 
 	//--------
 	//MAIN LOOP
