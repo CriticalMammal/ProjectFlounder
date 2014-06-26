@@ -399,7 +399,7 @@ vector<pathCoord> TileMap::pathFind(double startX, double startY, double endX, d
 		int openListSize = openCoordinates.size();
 
 		//if you remove/add elements openCoordinates.size will change?
-		for (int t=0; t<openCoordinates.size(); t++)
+		for (int t=0; t<openListSize; t++)
 		{
 			//check if tile is the end tile
 			if (openCoordinates.front().tileElement == endTileElement)
@@ -508,6 +508,9 @@ vector<pathCoord> TileMap::pathFind(double startX, double startY, double endX, d
 
 	pathCoordinates.push_back(pathCoord(endTileX + blockW/2, endTileY + blockH/2, tileDistance));
 
+	//TEMPORARY FIX: set a maximum coordinate limit to catch the infinite loop bug
+	int maxCoordinates = 300;
+
 	while (!pathFound)
 	{
 		int leftTile = goodTile-1;
@@ -585,17 +588,14 @@ vector<pathCoord> TileMap::pathFind(double startX, double startY, double endX, d
 		else
 		{
 			pathCoordinates.push_back(pathCoord(tileX + blockW/2, tileY + blockH/2, tileDistance));
-		}
 
-		//stop when you've backtracked and found a
-		//coordinate with the distance of 0
-		/*
-		if (pathCoordinates.back().distance <= 0)
-		{
-			pathFound = true;
-			break;
+			if (pathCoordinates.size() > maxCoordinates)
+			{
+				vector<pathCoord> failedPath;
+				failedPath.push_back(pathCoord(startX, startY, 0));
+				return failedPath;
+			}
 		}
-		*/
 	}
 	
 	//quickly flip the vector elements since they are listed
