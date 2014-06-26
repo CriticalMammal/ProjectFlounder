@@ -451,7 +451,7 @@ vector<pathCoord> TileMap::pathFind(double startX, double startY, double endX, d
 				nextTileDistX = abs(endX-nextTileX);
 				nextTileDistY = abs(endY-nextTileY);
 				heuristic = nextTileDistX+nextTileDistY;
-
+				
 				openCoordinates.push_back(pathTile(lastCoordinate-mapW, newDistance, heuristic));
 
 				//tile to the bottom
@@ -464,7 +464,10 @@ vector<pathCoord> TileMap::pathFind(double startX, double startY, double endX, d
 				openCoordinates.push_back(pathTile(lastCoordinate+mapW, newDistance, heuristic));
 			}
 			else
+			{
 				openCoordinates.erase(openCoordinates.begin());
+				t--;
+			}
 
 
 			//remove coordinates from closed/open if they are the
