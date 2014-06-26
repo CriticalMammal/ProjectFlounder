@@ -129,9 +129,9 @@ int main(int argc, char *args[])
 	}
 	
 
-	//set path for non player (TEMPORARY)
-	nonPlayer->setX(25);
-	nonPlayer->setY(25);
+	//set non player position
+	nonPlayer->setX(382.93);
+	nonPlayer->setY(231.8);
 
 
 	//--------
