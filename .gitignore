@@ -30,3 +30,7 @@
 # Folders
 ProjectFlounder/SquareSolution/Debug/*  
 ProjectFlounder/SquareSolution/Square/Debug/*   
+
+# Specific files
+ProjectFlounder/SquareSolution/SquareSolution.sln  
+ProjectFlounder/SquareSolution/SquareSolution.v11.suo  
