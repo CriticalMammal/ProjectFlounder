@@ -27,10 +27,9 @@
 *.suo
 *.psess
 
-# Folders
+# Folders  
 ProjectFlounder/SquareSolution/Debug/*  
 ProjectFlounder/SquareSolution/Square/Debug/*   
 
-# Specific files
-ProjectFlounder/SquareSolution/SquareSolution.sln  
+# Specific files  
 ProjectFlounder/SquareSolution/SquareSolution.v11.suo  
