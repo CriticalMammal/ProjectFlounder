@@ -25,5 +25,5 @@
 *.opensdf
 
 # Folders
-ProjectFlounder/SquareSolution/Debug/ 
-ProjectFlounder/SquareSolution/Square/Debug/  
+ProjectFlounder/SquareSolution/Debug/*  
+ProjectFlounder/SquareSolution/Square/Debug/*   
