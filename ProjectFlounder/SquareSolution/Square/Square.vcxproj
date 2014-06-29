@@ -70,6 +70,7 @@
   <ItemGroup>
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="item.cpp" />
+    <ClCompile Include="leader.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="nonPlayer.cpp" />
     <ClCompile Include="player.cpp" />
@@ -81,6 +82,7 @@
     <ClInclude Include="camera.h" />
     <ClInclude Include="definitions.h" />
     <ClInclude Include="item.h" />
+    <ClInclude Include="leader.h" />
     <ClInclude Include="nonPlayer.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="sprite.h" />

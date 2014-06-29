@@ -4,6 +4,7 @@
 
 #include "definitions.h"
 #include "sprite.h"
+#include "leader.h"
 #include "nonPlayer.h"
 
 using namespace std;
@@ -25,6 +26,11 @@ NonPlayer::NonPlayer()
 	nonPlayerRect.y = (y*zoom-yOffset);
 	nonPlayerRect.w = width*zoom;
 	nonPlayerRect.h = height*zoom;
+
+	collisionRect.x = x;
+	collisionRect.y = y;
+	collisionRect.w = width;
+	collisionRect.h = height;
 
 	vx = 0;
 	vy = 0;
@@ -109,6 +115,11 @@ void NonPlayer::update()
 	nonPlayerRect.y = (y*zoom-yOffset);
 	nonPlayerRect.w = width*zoom;
 	nonPlayerRect.h = height*zoom;
+
+	collisionRect.x = x;
+	collisionRect.y = y;
+	collisionRect.w = width;
+	collisionRect.h = height;
 }
 
 

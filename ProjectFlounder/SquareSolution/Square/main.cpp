@@ -15,6 +15,7 @@
 
 #include "definitions.h"
 #include "sprite.h"
+#include "leader.h"
 #include "player.h"
 #include "nonPlayer.h"
 #include "item.h"
@@ -239,11 +240,30 @@ int main(int argc, char *args[])
 
 		if (nonPlayer->getNextPathReady())
 		{
-			path = theMap.pathFind(nonPlayer->getMidX(), nonPlayer->getMidY(), player->getMidX(), player->getMidY());
+			//find closest item to npc
+			int closestItem = 0;
+			int closestDist = INT_MAX;
+			int currentDist = INT_MAX;
+
+			for (int i=0; i<items.size(); i++)
+			{
+				int nextTileDistX = abs(nonPlayer->getX() - items[i]->getX());
+				int nextTileDistY = abs(nonPlayer->getY() - items[i]->getY());
+				currentDist = nextTileDistX+nextTileDistY;
+
+				if (currentDist < closestDist)
+				{
+					closestItem = i;
+					closestDist = currentDist;
+				}
+			}
+
+			path = theMap.pathFind(nonPlayer->getMidX(), nonPlayer->getMidY(), items[closestItem]->getMidX(), items[closestItem]->getMidY());
 
 			nonPlayer->setPathCoordinates(path);
 			nonPlayer->setNextPathReady(false);
 		}
+
 
 		//handle items
 		//BE CAREFUL TO REMEMBER AND CREATE
@@ -254,19 +274,29 @@ int main(int argc, char *args[])
 			if (cameraTime >= items[i]->getPauseInterval())
 			{
 				
-				items[i]->newMoveToPoint(player);
+				if (collisionDetect(player->getCollisionRect(), items[i]->getCollisionRect()))
+				{
+					items[i]->newMoveToPoint(player);
+				}
+				else if (collisionDetect(nonPlayer->getCollisionRect(), items[i]->getCollisionRect()))
+				{
+					items[i]->newMoveToPoint(nonPlayer);
+				}
 			}
 
 			items[i]->update();
 
 			if (items[i]->getItemCollected())
 			{
+				Leader *leaderCollector = items[i]->getfollowedSprite();
 				int currentItemID = items[i]->getItemID();
-				int heldItems = player->getItemsHeld(currentItemID);
+				int heldItems = leaderCollector->getItemsHeld(currentItemID);
 
-				//add item to followed object (currently only the player)
-				player->setItemsHeld(heldItems + 1, currentItemID);
-				cout << "player has " << player->getItemsHeld(currentItemID) << " items" << endl;
+				//add item to followed object
+				leaderCollector->setItemsHeld(heldItems + 1, currentItemID);
+				system("cls");
+				cout << "player items: " << player->getItemsHeld(currentItemID) << endl;
+				cout << "npc items:    " << nonPlayer->getItemsHeld(currentItemID) << endl;
 
 				//remove item
 				items[i]->~Item();

@@ -381,10 +381,14 @@ vector<pathCoord> TileMap::pathFind(double startX, double startY, double endX, d
 
 	//if the start/end coordinates would result in an invalid path
 	if (getTileTraitAt(startX, startY, 0) == 1 ||
-		getTileTraitAt(endX, endY, 0) == 1 ||
-		startTileElement == endTileElement)
+		getTileTraitAt(endX, endY, 0) == 1)
 	{
 		pathCoordinates.push_back(pathCoord(startX, startY, 0));
+		return pathCoordinates;
+	}
+	else if (startTileElement == endTileElement)
+	{
+		pathCoordinates.push_back(pathCoord(endX, endY, 0));
 		return pathCoordinates;
 	}
 
@@ -506,7 +510,8 @@ vector<pathCoord> TileMap::pathFind(double startX, double startY, double endX, d
 	int endTileX = (goodTile%mapW) * blockW;
 	int endTileY = goodTile/mapW * blockH;
 
-	pathCoordinates.push_back(pathCoord(endTileX + blockW/2, endTileY + blockH/2, tileDistance));
+	//pathCoordinates.push_back(pathCoord(endTileX + blockW/2, endTileY + blockH/2, tileDistance));
+	pathCoordinates.push_back(pathCoord(endX, endY, tileDistance));
 
 	//TEMPORARY FIX: set a maximum coordinate limit to catch the infinite loop bug
 	int maxCoordinates = 300;

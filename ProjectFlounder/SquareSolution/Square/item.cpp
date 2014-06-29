@@ -4,6 +4,7 @@
 
 #include "definitions.h"
 #include "sprite.h"
+#include "leader.h"
 #include "item.h"
 
 
@@ -184,11 +185,13 @@ void Item::draw()
 }
 
 
-void Item::newMoveToPoint(Sprite *sprite)
+void Item::newMoveToPoint(Leader *leader)
 {
 	//this is called every (double pauseInterval) seconds
-	moveToPointX = (sprite->getMidX()) + randomNumber(-motion, motion);
-	moveToPointY = (sprite->getMidY()) + randomNumber(-motion, motion);
+	moveToPointX = (leader->getMidX()) + randomNumber(-motion, motion);
+	moveToPointY = (leader->getMidY()) + randomNumber(-motion, motion);
+
+	followedSprite = leader;
 }
 
 

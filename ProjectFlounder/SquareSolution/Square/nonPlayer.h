@@ -2,7 +2,7 @@
 #define NONPLAYER_H
 
 
-class NonPlayer : public Sprite
+class NonPlayer : public Leader
 {
 	private:
 		//variables
