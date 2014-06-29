@@ -4,9 +4,11 @@
 class Item : public Sprite
 {
 	private:
+		bool itemCollected;
 		double pauseInterval, maxDistance;
 		int moveToPointX, moveToPointY, accuracy, motion,
-			collisionPad;
+			collisionPad, itemID;
+		Leader *followedSprite;
 		SDL_Rect itemDisplay;
 
 	public:
@@ -14,7 +16,7 @@ class Item : public Sprite
 		~Item();
 		void update();
 		void draw(); //wait... should draw be in child classes?
-		void newMoveToPoint(Sprite *sprite);
+		void newMoveToPoint(Leader *leader);
 		double randomNumber(double Min, double Max);
 
 		double getSpeed() {return speed;}
@@ -23,7 +25,11 @@ class Item : public Sprite
 		int   getMotion() {return motion;}
 		int   getMoveToPointX() {return moveToPointX;}
 		int   getMoveToPointY() {return moveToPointY;}
+		int   getItemID()		{return itemID;}
+		bool  getItemCollected(){return itemCollected;}
+		Leader* getfollowedSprite() {return followedSprite;}
 
+		void setItemID(int newItemID) {itemID = newItemID;}
 		void setSpeed(double newSpeed) {speed = newSpeed;}
 		void setPauseInterval(double newPause) {pauseInterval = newPause*FPS;}
 		void setAccuracy(int newAccuracy) {accuracy = newAccuracy;}

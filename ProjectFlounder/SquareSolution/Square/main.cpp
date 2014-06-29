@@ -15,6 +15,7 @@
 
 #include "definitions.h"
 #include "sprite.h"
+#include "leader.h"
 #include "player.h"
 #include "nonPlayer.h"
 #include "item.h"
@@ -105,7 +106,7 @@ int main(int argc, char *args[])
 	items[0]->setX(1000);
 	items[0]->setY(1000);
 
-	int itemAmt = 0;
+	int itemAmt = 200;
 	for (int i=0; i<itemAmt; i++)
 	{
 		int itemX = randomNumber(blockWidth, mapWidthInPixels);
@@ -239,14 +240,30 @@ int main(int argc, char *args[])
 
 		if (nonPlayer->getNextPathReady())
 		{
-			//NOTE: something goes wrong when path tries to find a path to it's current coordinates
-			//not exactly sure what causes the crash, but it definitely seems like something
-			//goes wrong in the theMap.pathFind() function when you ask it to find a way to the current tile
-			path = theMap.pathFind(nonPlayer->getMidX(), nonPlayer->getMidY(), player->getMidX(), player->getMidY());
+			//find closest item to npc
+			int closestItem = 0;
+			int closestDist = INT_MAX;
+			int currentDist = INT_MAX;
+
+			for (int i=0; i<items.size(); i++)
+			{
+				int nextTileDistX = abs(nonPlayer->getX() - items[i]->getX());
+				int nextTileDistY = abs(nonPlayer->getY() - items[i]->getY());
+				currentDist = nextTileDistX+nextTileDistY;
+
+				if (currentDist < closestDist)
+				{
+					closestItem = i;
+					closestDist = currentDist;
+				}
+			}
+
+			path = theMap.pathFind(nonPlayer->getMidX(), nonPlayer->getMidY(), items[closestItem]->getMidX(), items[closestItem]->getMidY());
 
 			nonPlayer->setPathCoordinates(path);
 			nonPlayer->setNextPathReady(false);
 		}
+
 
 		//handle items
 		//BE CAREFUL TO REMEMBER AND CREATE
@@ -256,10 +273,36 @@ int main(int argc, char *args[])
 		{
 			if (cameraTime >= items[i]->getPauseInterval())
 			{
-				items[i]->newMoveToPoint(player);
+				
+				if (collisionDetect(player->getCollisionRect(), items[i]->getCollisionRect()))
+				{
+					items[i]->newMoveToPoint(player);
+				}
+				else if (collisionDetect(nonPlayer->getCollisionRect(), items[i]->getCollisionRect()))
+				{
+					items[i]->newMoveToPoint(nonPlayer);
+				}
 			}
 
 			items[i]->update();
+
+			if (items[i]->getItemCollected())
+			{
+				Leader *leaderCollector = items[i]->getfollowedSprite();
+				int currentItemID = items[i]->getItemID();
+				int heldItems = leaderCollector->getItemsHeld(currentItemID);
+
+				//add item to followed object
+				leaderCollector->setItemsHeld(heldItems + 1, currentItemID);
+				system("cls");
+				cout << "player items: " << player->getItemsHeld(currentItemID) << endl;
+				cout << "npc items:    " << nonPlayer->getItemsHeld(currentItemID) << endl;
+
+				//remove item
+				items[i]->~Item();
+				items.erase(items.begin()+i);
+				i--;
+			}
 		}
 
 		//handle camera
@@ -271,7 +314,7 @@ int main(int argc, char *args[])
 		if (cameraTime >= camera.getCameraPause())
 		{
 			camera.newMoveToPoint(player);
-			camera.newZoom(abs(1.5-(abs(player->getvy()/4)+abs(player->getvx()/4))));
+			//camera.newZoom(abs(1.5-(abs(player->getvy()/6+player->getvx()/6))));
 			cameraTime = 0;
 		}
 		camera.scrollScreen();

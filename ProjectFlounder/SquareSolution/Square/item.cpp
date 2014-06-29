@@ -4,6 +4,7 @@
 
 #include "definitions.h"
 #include "sprite.h"
+#include "leader.h"
 #include "item.h"
 
 
@@ -18,10 +19,14 @@ Item::Item()
 	y = 0;
 	width = 10;
 	height = 10;
-	moveToPointX = 0;
-	moveToPointY = 0;
-	maxDistance = 50.0;
-	speed = 0.1;
+	orgWidth = 10;
+	orgHeight = 10;
+
+	moveToPointX = -2000;
+	moveToPointY = -2000;
+
+	maxDistance = 18.0;
+	speed = 0.2;
 	maxSpeed = 1.2;
 	friction = 0.8;
 	vx = 0;
@@ -30,6 +35,9 @@ Item::Item()
 	motion = 10;	 //amount of motion/drift
 	pauseInterval = 0.15*FPS; //frames to wait to renew moveTo points
 	collisionPad = 1;
+
+	itemCollected = false;
+	itemID = 0;
 
 	itemDisplay.x = (x*zoom-xOffset);
 	itemDisplay.y = (y*zoom-yOffset);
@@ -95,11 +103,18 @@ void Item::update()
 			vy = maxSpeed;
 		else if (vy < -maxSpeed)
 			vy = -maxSpeed;
+		
+		//shrink if close to an followable object
+		width -= 1;
+		height -=1;
 	}
 	else
 	{
 		vx *= friction;
 		vy *= friction;
+
+		width += 1;
+		height += 1;
 	}
 
 
@@ -108,6 +123,24 @@ void Item::update()
 
 	x += vx;
 	y += vy;
+
+
+	if (width <= 0 || height <= 0)
+	{
+		if (width <= 0)
+			width = 0;
+		else if (height <= 0)
+			height = 0;
+
+		itemCollected = true;
+	}
+	else
+	{
+		if (width >= orgWidth)
+			width = orgWidth;
+		if (height >= orgHeight)
+			height = orgHeight;
+	}
 
 	itemDisplay.x = (x*zoom-xOffset);
 	itemDisplay.y = (y*zoom-yOffset);
@@ -152,11 +185,13 @@ void Item::draw()
 }
 
 
-void Item::newMoveToPoint(Sprite *sprite)
+void Item::newMoveToPoint(Leader *leader)
 {
 	//this is called every (double pauseInterval) seconds
-	moveToPointX = (sprite->getMidX()) + randomNumber(-motion, motion);
-	moveToPointY = (sprite->getMidY()) + randomNumber(-motion, motion);
+	moveToPointX = (leader->getMidX()) + randomNumber(-motion, motion);
+	moveToPointY = (leader->getMidY()) + randomNumber(-motion, motion);
+
+	followedSprite = leader;
 }
 
 

@@ -1,7 +1,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-class Player : public Sprite
+class Player : public Leader
 {
 	private:
 		int collisionPad;

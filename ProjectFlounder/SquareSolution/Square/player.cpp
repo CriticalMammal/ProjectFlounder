@@ -2,6 +2,7 @@
 
 #include "definitions.h"
 #include "sprite.h"
+#include "leader.h"
 #include "player.h"
 
 extern bool keys[];
@@ -14,7 +15,6 @@ Player::Player()
 	y = 330*zoom;
 	width = 10;
 	height = 10;
-
 
 	playerRect.x = x;
 	playerRect.y = y;
