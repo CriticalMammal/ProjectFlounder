@@ -21,4 +21,4 @@ Currently Implemented:
 -loading a small sprite sheet  
 -camera pan/zoom  
 -player movement/collisions (collisions need to be revised)  
--rudimentary Dijkstra pathtracking implementation (needs heavy revisions)  
+-rudimentary A* pathtracking implementation (needs heavy revisions)  
