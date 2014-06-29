@@ -25,7 +25,7 @@ Item::Item()
 	moveToPointY = -2000;
 
 	maxDistance = 18.0;
-	speed = 0.1;
+	speed = 0.2;
 	maxSpeed = 1.2;
 	friction = 0.8;
 	vx = 0;
