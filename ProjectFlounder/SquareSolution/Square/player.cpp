@@ -15,6 +15,10 @@ Player::Player()
 	width = 10;
 	height = 10;
 
+	for (int i=0; i<uniqueItemCount; i++)
+	{
+		itemsHeld[i] = 0;
+	}
 
 	playerRect.x = x;
 	playerRect.y = y;

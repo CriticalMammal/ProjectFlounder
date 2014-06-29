@@ -105,7 +105,7 @@ int main(int argc, char *args[])
 	items[0]->setX(1000);
 	items[0]->setY(1000);
 
-	int itemAmt = 0;
+	int itemAmt = 200;
 	for (int i=0; i<itemAmt; i++)
 	{
 		int itemX = randomNumber(blockWidth, mapWidthInPixels);
@@ -239,9 +239,6 @@ int main(int argc, char *args[])
 
 		if (nonPlayer->getNextPathReady())
 		{
-			//NOTE: something goes wrong when path tries to find a path to it's current coordinates
-			//not exactly sure what causes the crash, but it definitely seems like something
-			//goes wrong in the theMap.pathFind() function when you ask it to find a way to the current tile
 			path = theMap.pathFind(nonPlayer->getMidX(), nonPlayer->getMidY(), player->getMidX(), player->getMidY());
 
 			nonPlayer->setPathCoordinates(path);
@@ -256,10 +253,26 @@ int main(int argc, char *args[])
 		{
 			if (cameraTime >= items[i]->getPauseInterval())
 			{
+				
 				items[i]->newMoveToPoint(player);
 			}
 
 			items[i]->update();
+
+			if (items[i]->getItemCollected())
+			{
+				int currentItemID = items[i]->getItemID();
+				int heldItems = player->getItemsHeld(currentItemID);
+
+				//add item to followed object (currently only the player)
+				player->setItemsHeld(heldItems + 1, currentItemID);
+				cout << "player has " << player->getItemsHeld(currentItemID) << " items" << endl;
+
+				//remove item
+				items[i]->~Item();
+				items.erase(items.begin()+i);
+				i--;
+			}
 		}
 
 		//handle camera
@@ -271,7 +284,7 @@ int main(int argc, char *args[])
 		if (cameraTime >= camera.getCameraPause())
 		{
 			camera.newMoveToPoint(player);
-			camera.newZoom(abs(1.5-(abs(player->getvy()/4)+abs(player->getvx()/4))));
+			//camera.newZoom(abs(1.5-(abs(player->getvy()/6+player->getvx()/6))));
 			cameraTime = 0;
 		}
 		camera.scrollScreen();

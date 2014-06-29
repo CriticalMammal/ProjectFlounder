@@ -4,9 +4,10 @@
 class Item : public Sprite
 {
 	private:
+		bool itemCollected;
 		double pauseInterval, maxDistance;
 		int moveToPointX, moveToPointY, accuracy, motion,
-			collisionPad;
+			collisionPad, itemID;
 		SDL_Rect itemDisplay;
 
 	public:
@@ -23,7 +24,10 @@ class Item : public Sprite
 		int   getMotion() {return motion;}
 		int   getMoveToPointX() {return moveToPointX;}
 		int   getMoveToPointY() {return moveToPointY;}
+		int   getItemID()		{return itemID;}
+		bool  getItemCollected(){return itemCollected;}
 
+		void setItemID(int newItemID) {itemID = newItemID;}
 		void setSpeed(double newSpeed) {speed = newSpeed;}
 		void setPauseInterval(double newPause) {pauseInterval = newPause*FPS;}
 		void setAccuracy(int newAccuracy) {accuracy = newAccuracy;}

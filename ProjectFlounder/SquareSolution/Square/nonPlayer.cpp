@@ -35,7 +35,7 @@ NonPlayer::NonPlayer()
 	accuracy = 1;
 
 	//add timer
-	delay = 1000;
+	delay = 100;
 	timerID = SDL_AddTimer(delay, timerFunction, NULL);
 
 	std::vector<pathCoord> tempPath;
