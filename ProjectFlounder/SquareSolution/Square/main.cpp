@@ -23,8 +23,8 @@
 #include "tileMap.h"
 #include "camera.h"
 
-
 using namespace std;
+
 
 //variables
 SDL_Event evt;
@@ -65,6 +65,7 @@ float randomNumber(float, float);
 void close();
 
 
+
 int main(int argc, char *args[])
 {
 	bool quit = false;
@@ -93,9 +94,6 @@ int main(int argc, char *args[])
 		printf("Failed to load media\n");
 		return -1;
 	}
-
-	unsigned char treeAlpha = 255;
-	SDL_Rect tree = {350, 250, 150, 150};
 
 	//initialize tilemap
 	theMap.initialize("mapFile.txt", mapHeight, mapWidth, blockHeight, blockWidth, *renderer);
@@ -358,33 +356,6 @@ int main(int argc, char *args[])
 		//check for item collisions
 		for (int i=0; i<items.size(); i++)
 		{
-			/*
-			//not ready yet due to items causing "traffic jams" with each other
-			//check collisions with other items
-			for (int t=0; t<items.size(); t++)
-			{
-				if (i!=t)
-				{
-					if (collisionDetect(items[i]->getCollisionRectHorz(), items[t]->getCollisionRect()))
-					{
-						items[i]->setX(items[i]->getOldX());
-						items[i]->setVx(0);
-
-						//items[t]->setX(items[t]->getOldX());
-						//items[t]->setVx(0);
-					}
-					if (collisionDetect(items[i]->getCollisionRectVert(), items[t]->getCollisionRect()))
-					{
-						items[i]->setY(items[i]->getOldY());
-						items[i]->setVy(0);
-
-						//items[t]->setY(items[t]->getOldY());
-						//items[t]->setVy(0);
-					}
-				}
-			}
-			*/
-
 			//check collisions with tile map
 			if (theMap.checkCollision(items[i]->getCollisionRectHorz()))
 			{

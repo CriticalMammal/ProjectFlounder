@@ -1,3 +1,5 @@
+//tileMap.cpp - source file for the game's tile map. 
+
 #include <SDL.h>
 #include <fstream> //is a part of <stdio>?
 #include <iostream>
@@ -15,10 +17,12 @@ using namespace std;
 extern double zoom;
 
 
+
 TileMap::TileMap()
 {
 
 }
+
 
 
 TileMap::~TileMap()
@@ -28,6 +32,7 @@ TileMap::~TileMap()
 		blocks[i]->~Tile();
 	}
 }
+
 
 
 void TileMap::initialize(std::string fileLocation, int mapHeight, int mapWidth, int blockHeight, int blockWidth, SDL_Renderer &mainRenderer)
@@ -133,6 +138,7 @@ void TileMap::initialize(std::string fileLocation, int mapHeight, int mapWidth, 
 }
 
 
+
 void TileMap::drawTileMap()
 {
 	int tile = 0;
@@ -173,6 +179,7 @@ void TileMap::drawTileMap()
 } //END draw()
 
 
+
 void TileMap::saveMapFile()
 {
 	ofstream externMapFile;
@@ -187,6 +194,7 @@ void TileMap::saveMapFile()
 	
 	externMapFile.close();
 }
+
 
 
 int TileMap::getTileTraitAt(int x, int y, int trait)
@@ -229,6 +237,7 @@ int TileMap::getTileTraitAt(int x, int y, int trait)
 }
 
 
+
 //pretty much useless with the new collisions implemented. Tile instances could store rects so that
 //you can easily obtain x,y,w,h info
 SDL_Rect TileMap::getTileRectAt(int x, int y)
@@ -258,9 +267,7 @@ SDL_Rect TileMap::getTileRectAt(int x, int y)
 }
 
 
-//this whole check collision thing needs some cleaning up, also you need
-//to implement "smooth" sliding collisions by checking each side of a collision
-//rather than just returning a bool for on/off collision status
+
 bool TileMap::checkCollision(SDL_Rect rect1)
 {
 	//some of these probably need renaming to be clear such as
@@ -311,6 +318,7 @@ bool TileMap::checkCollision(SDL_Rect rect1)
 }
 
 
+
 bool TileMap::collisionDetect(SDL_Rect rect1, SDL_Rect rect2)
 {
 	int left1, right1, top1, bottom1,
@@ -336,6 +344,7 @@ bool TileMap::collisionDetect(SDL_Rect rect1, SDL_Rect rect2)
 } //END collisionDetect
 
 
+
 void TileMap::changeTileAt(int x, int y)
 {
 	
@@ -357,6 +366,7 @@ void TileMap::changeTileAt(int x, int y)
 		}
 	}
 }
+
 
 
 vector<pathCoord> TileMap::pathFind(double startX, double startY, double endX, double endY)
@@ -391,7 +401,6 @@ vector<pathCoord> TileMap::pathFind(double startX, double startY, double endX, d
 		pathCoordinates.push_back(pathCoord(endX, endY, 0));
 		return pathCoordinates;
 	}
-
 
 	//start the path finding process
 	bool pathFound = false;
@@ -473,7 +482,6 @@ vector<pathCoord> TileMap::pathFind(double startX, double startY, double endX, d
 				t--;
 			}
 
-
 			//remove coordinates from closed/open if they are the
 			//same tile and have a larger distance value
 			for (int i=0; i<openCoordinates.size(); i++)
@@ -500,7 +508,6 @@ vector<pathCoord> TileMap::pathFind(double startX, double startY, double endX, d
 			std::sort(openCoordinates.begin(), openCoordinates.end(), lessThanHeuristic());
 		}
 	}
-
 
 	//backtrack and find the best path back to the start
 	pathFound = false;
@@ -612,6 +619,7 @@ vector<pathCoord> TileMap::pathFind(double startX, double startY, double endX, d
 }//END pathFind()
 
 
+
 SDL_Texture* TileMap::loadTexture (std::string path, SDL_Surface *currentSurface)
 {
 	//final image
@@ -649,6 +657,7 @@ SDL_Texture* TileMap::loadTexture (std::string path, SDL_Surface *currentSurface
 
 	return newTexture;
 } //END loadSurface()
+
 
 
 float TileMap::randomNumber(float Min, float Max)
