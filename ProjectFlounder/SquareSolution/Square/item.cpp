@@ -11,6 +11,7 @@
 extern bool keys[];
 extern double xOffset, yOffset, zoom;
 extern SDL_Renderer* renderer;
+extern SDL_Event evt;
 
 
 Item::Item()
@@ -37,7 +38,8 @@ Item::Item()
 	collisionPad = 1;
 
 	itemCollected = false;
-	itemID = 0;
+	itemType = 0;
+	itemID = NULL;
 
 	itemDisplay.x = (x*zoom-xOffset);
 	itemDisplay.y = (y*zoom-yOffset);
@@ -58,6 +60,12 @@ Item::Item()
 	collisionVert.y = y;
 	collisionVert.w = width-collisionPad*2;
 	collisionVert.h = height;
+
+	//add mini timer
+	delay = 100;
+	currentTick = SDL_GetTicks();
+	lastTick = currentTick;
+	tickAccumulation += currentTick-lastTick;
 }
 
 Item::~Item()
@@ -68,6 +76,14 @@ Item::~Item()
 
 void Item::update()
 {
+	//get ticks for timer
+	lastTick = currentTick;
+	currentTick = SDL_GetTicks();
+	tickAccumulation += currentTick-lastTick;
+
+	timer();
+
+
 	int midX = x+width/2;
 	int midY = y+height/2;
 
@@ -193,6 +209,18 @@ void Item::newMoveToPoint(Leader *leader)
 
 	followedSprite = leader;
 }
+
+
+
+void Item::timer()
+{
+	if (tickAccumulation >= delay)
+	{
+		flag = true;
+		tickAccumulation = 0;
+	}
+}
+
 
 
 double Item::randomNumber(double Min, double Max)

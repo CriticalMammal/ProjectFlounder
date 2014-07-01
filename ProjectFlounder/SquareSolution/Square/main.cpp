@@ -50,7 +50,7 @@ int mapWidthInPixels = mapWidth*(blockWidth);
 int mapHeightInPixels = mapHeight*(blockHeight);
 Uint32 startTime = 0;
 string timeText = "";
-bool keys[] = {false, false, false, false, false};
+bool keys[] = {false, false, false, false, false, false};
 bool leftClick = false, rightClick = false;
 
 
@@ -69,8 +69,8 @@ void close();
 int main(int argc, char *args[])
 {
 	bool quit = false;
-	bool changeBlock = false, addItem = false;
-	int cameraTime = 0;
+	bool changeBlock = false, addItem = false, openPlayerInventory = false;
+	int cameraTime = 0, itemToUpdate = 0;;
 	int mouseX = 0, mouseY = 0;
 	xOffset = 0;
 	yOffset = 0;
@@ -80,7 +80,10 @@ int main(int argc, char *args[])
 	player = new Player;
 	nonPlayer = new NonPlayer;
 
+	camera.setfollowedObject(player);
+
 	vector<pathCoord> path;
+	vector<int> itemsUpdateList;
 
 	//Initialize SDL
 	if (!init())
@@ -167,6 +170,10 @@ int main(int argc, char *args[])
 					case SDLK_c:
 						keys[c] = true;
 						break;
+					case SDLK_TAB:
+						keys[TAB] = true;
+						player->setInventoryOpen(!player->getInventoryOpen());
+						break;
 				} //END switch(evt.key.keysym.sym)
 			}
 			else if (evt.type == SDL_KEYUP)
@@ -187,6 +194,9 @@ int main(int argc, char *args[])
 						break;
 					case SDLK_c:
 						keys[c] = false;
+						break;
+					case SDLK_TAB:
+						keys[TAB] = false;
 						break;
 				}
 			}
@@ -269,9 +279,9 @@ int main(int argc, char *args[])
 		//rather than basing it off of the cameraTime!!!!
 		for (int i=0; i<items.size(); i++)
 		{
-			if (cameraTime >= items[i]->getPauseInterval())
+			//if (cameraTime >= items[i]->getPauseInterval())
+			if (items[i]->getFlag())
 			{
-				
 				if (collisionDetect(player->getCollisionRect(), items[i]->getCollisionRect()))
 				{
 					items[i]->newMoveToPoint(player);
@@ -287,14 +297,14 @@ int main(int argc, char *args[])
 			if (items[i]->getItemCollected())
 			{
 				Leader *leaderCollector = items[i]->getfollowedSprite();
-				int currentItemID = items[i]->getItemID();
-				int heldItems = leaderCollector->getItemsHeld(currentItemID);
+				int currentitemType = items[i]->getitemType();
+				int heldItems = leaderCollector->getItemsHeld(currentitemType);
 
 				//add item to followed object
-				leaderCollector->setItemsHeld(heldItems + 1, currentItemID);
+				leaderCollector->setItemsHeld(heldItems + 1, currentitemType);
 				system("cls");
-				cout << "player items: " << player->getItemsHeld(currentItemID) << endl;
-				cout << "npc items:    " << nonPlayer->getItemsHeld(currentItemID) << endl;
+				cout << "player items: " << player->getItemsHeld(currentitemType) << endl;
+				cout << "npc items:    " << nonPlayer->getItemsHeld(currentitemType) << endl;
 
 				//remove item
 				items[i]->~Item();
@@ -303,7 +313,8 @@ int main(int argc, char *args[])
 			}
 		}
 
-		//handle camera
+
+		//HANDLE CAMERA
 		mapWidthInPixels = mapWidth*(blockWidth*zoom);
 		mapHeightInPixels = mapHeight*(blockHeight*zoom);
 
@@ -311,10 +322,34 @@ int main(int argc, char *args[])
 		cameraTime ++;
 		if (cameraTime >= camera.getCameraPause())
 		{
-			camera.newMoveToPoint(player);
-			//camera.newZoom(abs(1.5-(abs(player->getvy()/6+player->getvx()/6))));
+			if (player->getInventoryOpen())
+			{
+				//zoom very close into the player
+				camera.setZoomVelocity(0);
+				camera.newZoom(40, 0.001, 0.2, 0.01);
+
+				camera.setAccuracy(5);
+				camera.setMotion(0);
+				camera.setFriction(0.8);
+
+				camera.newMoveToPoint(player, 2, 0);
+			}
+			else
+			{
+				//normal camera movement etc
+				camera.setZoomVelocity(0);
+				camera.newZoom(2.5, 0.001, 0.2, 0.01);
+
+				camera.setAccuracy(5);
+				camera.setMotion(0);
+				camera.setFriction(0.8);
+
+				camera.newMoveToPoint(player, 0, 0);
+			}
+
 			cameraTime = 0;
 		}
+
 		camera.scrollScreen();
 		
 		
@@ -369,7 +404,7 @@ int main(int argc, char *args[])
 			}
 		}
 
-		/*
+		
 		//UPDATE TEXT
 		
 		//set text
@@ -382,7 +417,7 @@ int main(int argc, char *args[])
 		SDL_QueryTexture(text, NULL, NULL, &textW, &textH);
 		int textX = SCREEN_WIDTH/2 - textW/2;
 		int textY = SCREEN_HEIGHT/2 - textH/2;
-		*/
+		
 
 		//------
 		//RENDER
@@ -405,8 +440,9 @@ int main(int argc, char *args[])
 		}
 
 		
-		/*
+		
 		//render camera focus point
+		/*
 		SDL_Rect cameraPoint = {(camera.getMoveToPointX()+SCREEN_WIDTH/2)-xOffset-1, (camera.getMoveToPointY()+SCREEN_HEIGHT/2)-yOffset-1, 2, 2}; 
 		SDL_SetRenderDrawColor(renderer, 255, 0, 255, 255);
 		SDL_RenderFillRect(renderer, &cameraPoint);
@@ -416,8 +452,15 @@ int main(int argc, char *args[])
 		SDL_RenderDrawRect(renderer, &accuracyBox);
 		*/
 
+		//render fly on the screen
+		/*
+		SDL_Rect marker = {300, 400, 2, 2};
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+		SDL_RenderFillRect(renderer, &marker);
+		*/
+
 		//render text
-		//SDL_RenderCopy(renderer, text, NULL, &textRect);
+		SDL_RenderCopy(renderer, text, NULL, &textRect);
 
 		SDL_RenderPresent(renderer);
 		countedFrames++;

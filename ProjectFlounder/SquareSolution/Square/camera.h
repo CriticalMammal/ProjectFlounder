@@ -10,16 +10,19 @@ class Camera
 {
 	private:
 		double vx, vy,speed, maxSpeed, friction, cameraPause,
-			zoomVelocity, zoomToPoint;
+			zoomVelocity, zoomSpeed, zoomMaxSpeed, zoomAccuracy, zoomToPoint;
+		double oldMapWidthInPixels, oldMapHeightInPixels;
 		int width, height, moveToPointX, moveToPointY,
 			accuracy, motion;
+		Sprite *followedObject;
+
 	public:
 		Camera();
 		~Camera();
 		void handleKeys(double playerSpeed);
 		void scrollScreen();
-		void newMoveToPoint(Sprite *sprite);
-		void newZoom(double);
+		void newMoveToPoint(Sprite *sprite, double xAdj, double yAdj);
+		void newZoom(double newZoom, double speed, double maxSpeed, double accuracy);
 		double randomNumber(double Min, double Max);
 
 		//quick inline functions
@@ -31,9 +34,13 @@ class Camera
 		int   getMoveToPointY() {return moveToPointY;}
 
 		void setSpeed(double newSpeed) {speed = newSpeed;}
+		void setMaxSpeed(double newMax) {maxSpeed = newMax;}
 		void setCameraPause(double newPause) {cameraPause = newPause*FPS;}
 		void setAccuracy(int newAccuracy) {accuracy = newAccuracy;}
 		void setMotion(int newMotion) {motion = newMotion;}
+		void setZoomVelocity(double newVel) {zoomVelocity = newVel;}
+		void setFriction (double newFric) {friction = newFric;}
+		void setfollowedObject (Sprite* object) {followedObject = object;}
 };
 
 #endif

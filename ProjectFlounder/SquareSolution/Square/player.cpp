@@ -11,13 +11,15 @@ extern SDL_Renderer* renderer;
 
 Player::Player()
 {
-	x = 210*zoom;
-	y = 330*zoom;
+	inventoryOpen = false;
+
+	x = 210;
+	y = 330;
 	width = 10;
 	height = 10;
 
-	playerRect.x = x;
-	playerRect.y = y;
+	playerRect.x = (x*zoom-xOffset);
+	playerRect.y = (y*zoom-yOffset);
 	playerRect.w = width*zoom;
 	playerRect.h = height*zoom;
 

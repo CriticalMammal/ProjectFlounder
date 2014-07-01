@@ -34,6 +34,6 @@ struct lessThanHeuristic
 #define FPS 60
 #define NPC_EVENT 1
 
-enum {LEFT, RIGHT, UP, DOWN, c};
+enum {LEFT, RIGHT, UP, DOWN, c, TAB};
 
 #endif

@@ -17,6 +17,8 @@ class NonPlayer : public Leader
 		//functions
 			static Uint32 timerFunction(Uint32, void*);
 
+
+
 	public:
 		NonPlayer();
 		~NonPlayer();
