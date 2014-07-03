@@ -17,7 +17,7 @@ class TileMap
 		SDL_Texture* loadTexture(std::string, SDL_Surface*);
 		float randomNumber(float, float);
 		bool collisionDetect(SDL_Rect, SDL_Rect);
-		int getTileElementAt(int x, int y)
+		int getTileElementAt(int x, int y);
 		
 
 	public:
