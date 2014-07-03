@@ -40,9 +40,6 @@ Camera::Camera()
 	zoomAccuracy = 0;
 	zoomMaxSpeed = maxSpeed/1000;
 	zoomToPoint = 1;
-
-	oldMapHeightInPixels = mapHeightInPixels;
-	oldMapWidthInPixels = mapWidthInPixels;
 }
 
 

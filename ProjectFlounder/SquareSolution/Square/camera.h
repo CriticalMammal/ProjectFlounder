@@ -11,7 +11,6 @@ class Camera
 	private:
 		double vx, vy,speed, maxSpeed, friction, cameraPause,
 			zoomVelocity, zoomSpeed, zoomMaxSpeed, zoomAccuracy, zoomToPoint;
-		double oldMapWidthInPixels, oldMapHeightInPixels;
 		int width, height, moveToPointX, moveToPointY,
 			accuracy, motion;
 		Sprite *followedObject;

@@ -5,14 +5,13 @@ class Item : public Sprite
 {
 	private:
 		Uint32 delay;
-		bool itemCollected, flag;
+		bool itemCollected, updateFlag;
 		double pauseInterval, maxDistance;
 		int moveToPointX, moveToPointY, accuracy, motion,
-			collisionPad, itemType, itemID;
+			collisionPad, itemType;
 		int currentTick, lastTick, tickAccumulation;
 		Leader *followedSprite;
 		SDL_Rect itemDisplay;
-		SDL_TimerID timerID;
 		static Item *selfReference;
 
 		void timer();
@@ -35,7 +34,7 @@ class Item : public Sprite
 		int   getMoveToPointY() {return moveToPointY;}
 		int   getitemType()		{return itemType;}
 		bool  getItemCollected(){return itemCollected;}
-		bool  getFlag()			{return flag;}
+		bool  getUpdateFlag()			{return updateFlag;}
 		Leader* getfollowedSprite() {return followedSprite;}
 
 		void setitemType(int newitemType) {itemType = newitemType;}

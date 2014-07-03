@@ -197,7 +197,7 @@ void TileMap::saveMapFile()
 
 
 
-int TileMap::getTileTraitAt(int x, int y, int trait)
+int TileMap::getTileElementAt(int x, int y)
 {
 	//If you divide the coordinates by the width/height of each tile...
 	//you should be able to find out the element it would be in the vector
@@ -206,6 +206,15 @@ int TileMap::getTileTraitAt(int x, int y, int trait)
 
 	//each tilesHigh will be an entire row of tiles, aka the mapW
 	int tileElement = tilesHigh*mapW + tilesWide;
+
+	return tileElement;
+}
+
+
+
+int TileMap::getTileTraitAt(int x, int y, int trait)
+{
+	int tileElement = getTileElementAt(x, y);
 
 	if (tileElement > 0 && tileElement < tileMap.size())
 	{
@@ -347,12 +356,7 @@ bool TileMap::collisionDetect(SDL_Rect rect1, SDL_Rect rect2)
 
 void TileMap::changeTileAt(int x, int y)
 {
-	
-	int tilesWide = x/blockW;
-	int tilesHigh = y/blockH;
-
-	int tileElement = tilesHigh*mapW + tilesWide;
-
+	int tileElement = getTileElementAt(x, y);
 
 	if (tileElement > 0 && tileElement < tileMap.size())
 	{
@@ -373,15 +377,10 @@ vector<pathCoord> TileMap::pathFind(double startX, double startY, double endX, d
 {
 	//first let's figure out the tile array elements for the start and end
 	//that way you can create a path based on the tile positions
-	int tilesWide = startX/blockW;
-	int tilesHigh = startY/blockH;
+	int startTileElement = getTileElementAt(startX, startY);
 
-	int startTileElement = tilesHigh*mapW + tilesWide;
+	int endTileElement = getTileElementAt(endX, endY);
 
-	tilesWide = endX/blockW;
-	tilesHigh = endY/blockH;
-
-	int endTileElement = tilesHigh*mapW + tilesWide;
 
 	//create lists/vectors to store the path data
 	//pathTile and pathCoord are structs created in definitions.h

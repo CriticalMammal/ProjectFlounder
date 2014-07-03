@@ -39,7 +39,6 @@ Item::Item()
 
 	itemCollected = false;
 	itemType = 0;
-	itemID = NULL;
 
 	itemDisplay.x = (x*zoom-xOffset);
 	itemDisplay.y = (y*zoom-yOffset);
@@ -216,7 +215,7 @@ void Item::timer()
 {
 	if (tickAccumulation >= delay)
 	{
-		flag = true;
+		updateFlag = true;
 		tickAccumulation = 0;
 	}
 }

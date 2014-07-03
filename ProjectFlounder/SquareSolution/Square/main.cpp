@@ -61,7 +61,7 @@ SDL_Texture* loadTexture(std::string path);
 SDL_Texture* renderText(const std::string &message, const std::string &fontLocation, 
 						SDL_Color color, int fontSize);
 bool collisionDetect(SDL_Rect rect1, SDL_Rect rect2);
-float randomNumber(float, float);
+double randomNumber(double, double);
 void close();
 
 
@@ -75,7 +75,8 @@ int main(int argc, char *args[])
 	xOffset = 0;
 	yOffset = 0;
 	zoom = 1;
-	srand(time(NULL));
+
+	srand((unsigned)time(NULL)); //seed random numbers
 
 	player = new Player;
 	nonPlayer = new NonPlayer;
@@ -110,12 +111,12 @@ int main(int argc, char *args[])
 	int itemAmt = 200;
 	for (int i=0; i<itemAmt; i++)
 	{
-		int itemX = randomNumber(blockWidth, mapWidthInPixels);
-		int itemY = randomNumber(blockHeight, mapWidthInPixels);
+		double itemX = randomNumber(blockWidth, mapWidthInPixels);
+		double itemY = randomNumber(blockHeight, mapWidthInPixels);
 		int width = items[0]->getWidth();
 		int height = items[0]->getHeight();
 		
-		SDL_Rect itemRect = {itemX, itemY, width, height};
+		SDL_Rect itemRect = {int(itemX), int(itemY), width, height};
 
 		while (theMap.checkCollision(itemRect))
 		{
@@ -280,7 +281,7 @@ int main(int argc, char *args[])
 		for (int i=0; i<items.size(); i++)
 		{
 			//if (cameraTime >= items[i]->getPauseInterval())
-			if (items[i]->getFlag())
+			if (items[i]->getUpdateFlag())
 			{
 				if (collisionDetect(player->getCollisionRect(), items[i]->getCollisionRect()))
 				{
@@ -614,9 +615,9 @@ bool collisionDetect(SDL_Rect rect1, SDL_Rect rect2)
 
 //come up with a better solution to distribute the random
 //numbers evenly. rand() doesn't evenly distribute!
-float randomNumber(float Min, float Max)
+double randomNumber(double Min, double Max)
 {
-    return ((float(rand()) / float(RAND_MAX)) * (Max - Min)) + Min;
+    return ((double(rand()) / double(RAND_MAX)) * (Max - Min)) + Min;
 }
 
 
