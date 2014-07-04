@@ -105,7 +105,7 @@ void TileMap::initialize(std::string fileLocation, int mapHeight, int mapWidth, 
 	//make all recently read tiles into textures and free surfaces
 	for (int i=0; i<blockSurface.size(); i++)
 	{
-		SDL_Texture *tempTexture = loadTexture("empty string", blockSurface[i]);
+		SDL_Texture *tempTexture = loadTexture("emptyString", blockSurface[i]);
 		blocks.push_back(new Tile);
 		blocks.back()->settileTexture(tempTexture);
 
@@ -133,7 +133,7 @@ void TileMap::initialize(std::string fileLocation, int mapHeight, int mapWidth, 
 
 	for (int i=0; i<blockSurface.size(); i++) //bleh, copy pasted for loop from above
 	{
-		SDL_FreeSurface(blockSurface[i]);
+		//SDL_FreeSurface(blockSurface[i]);
 	}
 }
 

@@ -22,6 +22,7 @@
 #include "tile.h"
 #include "tileMap.h"
 #include "camera.h"
+#include "sideMenu.h"
 
 using namespace std;
 
@@ -37,6 +38,8 @@ Camera camera;
 
 Player *player;
 NonPlayer *nonPlayer;
+
+SideMenu tileEditorMenu;
 
 vector<Item*> items;
 
@@ -174,6 +177,7 @@ int main(int argc, char *args[])
 					case SDLK_TAB:
 						keys[TAB] = true;
 						player->setInventoryOpen(!player->getInventoryOpen());
+						tileEditorMenu.setMenuOpen(!tileEditorMenu.getMenuOpen());
 						break;
 				} //END switch(evt.key.keysym.sym)
 			}
@@ -272,6 +276,11 @@ int main(int argc, char *args[])
 			nonPlayer->setPathCoordinates(path);
 			nonPlayer->setNextPathReady(false);
 		}
+
+
+		//handle menus
+		tileEditorMenu.update();
+
 
 
 		//handle items
@@ -439,6 +448,9 @@ int main(int argc, char *args[])
 		{
 			items[i]->draw();
 		}
+
+		//render menus
+		tileEditorMenu.draw();
 
 		
 		

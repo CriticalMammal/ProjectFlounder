@@ -186,7 +186,7 @@ void Item::draw()
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 100);
 	SDL_RenderFillRect(renderer, &tempShadow);
 
-	SDL_SetRenderDrawColor(renderer, randomNumber(50, 100), 150, randomNumber(100, 200), 255);
+	SDL_SetRenderDrawColor(renderer, randomNumber(100, 200), 0, randomNumber(100, 200), 255);
 	SDL_RenderFillRect(renderer, &itemDisplay);
 
 	/*
