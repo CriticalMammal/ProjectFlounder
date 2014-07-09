@@ -131,9 +131,9 @@ void TileMap::initialize(std::string fileLocation, int mapHeight, int mapWidth, 
 
 	tileTraitFile.close();
 
-	for (int i=0; i<blockSurface.size(); i++) //bleh, copy pasted for loop from above
+	for (int i=blockSurface.size()-1; i<=0; i=blockSurface.size()-1)
 	{
-		//SDL_FreeSurface(blockSurface[i]);
+		SDL_FreeSurface(blockSurface[i]);
 	}
 }
 

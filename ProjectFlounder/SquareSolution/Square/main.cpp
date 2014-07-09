@@ -108,8 +108,8 @@ int main(int argc, char *args[])
 	
 	//randomly place items in game
 	items.push_back(new Item);
-	items[0]->setX(1000);
-	items[0]->setY(1000);
+	items[0]->setX(-1000);
+	items[0]->setY(-1000);
 
 	int itemAmt = 200;
 	for (int i=0; i<itemAmt; i++)
@@ -283,13 +283,9 @@ int main(int argc, char *args[])
 
 
 
-		//handle items
-		//BE CAREFUL TO REMEMBER AND CREATE
-		//individual timers for each instance of an item
-		//rather than basing it off of the cameraTime!!!!
+		//HANDLE ITEMS
 		for (int i=0; i<items.size(); i++)
 		{
-			//if (cameraTime >= items[i]->getPauseInterval())
 			if (items[i]->getUpdateFlag())
 			{
 				if (collisionDetect(player->getCollisionRect(), items[i]->getCollisionRect()))

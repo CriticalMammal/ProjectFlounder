@@ -7,6 +7,13 @@ class SideMenu : public Sprite
 		bool menuOpen;
 		SDL_Rect menuRect;
 
+		double menuOpenCoordX;
+		double menuOpenCoordY;
+
+		double menuClosedCoordX;
+		double menuClosedCoordY;
+
+
 	public:
 		SideMenu();
 		~SideMenu();
@@ -15,7 +22,7 @@ class SideMenu : public Sprite
 		void draw();
 		void update();
 
-
+		//getter/setters
 		SDL_Rect getMenuRect() {return menuRect;}
 		bool getMenuOpen() {return menuOpen;}
 

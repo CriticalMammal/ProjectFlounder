@@ -12,10 +12,19 @@ SideMenu::SideMenu()
 {
 	menuOpen = false;
 
+
 	width = SCREEN_WIDTH/4;
 	height = 350;
 	x = SCREEN_WIDTH+10;
 	y = (SCREEN_HEIGHT/2)-(height/2);
+
+
+	menuClosedCoordX = SCREEN_WIDTH+10;
+	menuClosedCoordY = y;
+
+	menuOpenCoordX = SCREEN_WIDTH-width;
+	menuOpenCoordY = y;
+
 
 	vx =0;
 	vy = 0;
@@ -23,10 +32,14 @@ SideMenu::SideMenu()
 	speed = 0.2;
 	maxSpeed = 4;
 
+
 	menuRect.x = x;
 	menuRect.y = y;
 	menuRect.h = height;
 	menuRect.w = width;
+
+	//create clickable icons
+
 }
 
 
@@ -50,7 +63,7 @@ void SideMenu::update()
 	if (menuOpen)
 	{
 		//open the menu
-		if (x > SCREEN_WIDTH-(width))
+		if (x > menuOpenCoordX)
 		{
 			vx -= speed;
 		}
@@ -58,7 +71,7 @@ void SideMenu::update()
 	else
 	{
 		//close the menu
-		if (x < SCREEN_WIDTH+10)
+		if (x < menuClosedCoordX)
 		{
 			vx += speed;
 		}
@@ -74,13 +87,13 @@ void SideMenu::update()
 
 
 	//don't go past boundaries
-	if (x >= SCREEN_WIDTH+10)
+	if (x >= menuClosedCoordX)
 	{
-		x = SCREEN_WIDTH+10;
+		x = menuClosedCoordX;
 	}
-	else if (x <= SCREEN_WIDTH-(width))
+	else if (x <= menuOpenCoordX)
 	{
-		x = SCREEN_WIDTH-(width);
+		x = menuOpenCoordX;
 	}
 
 	//update rect
