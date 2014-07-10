@@ -11,8 +11,8 @@ extern SDL_Renderer* renderer;
 
 Player::Player()
 {
-	x = 210*zoom;
-	y = 330*zoom;
+	x = 60*zoom;
+	y = 60*zoom;
 	width = 10;
 	height = 10;
 

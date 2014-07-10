@@ -24,7 +24,7 @@ class TileMap
 		~TileMap();
 
 		void initialize(std::string, int, int, int, int, SDL_Renderer&);
-		void drawTileMap();
+		void drawTileMap(SDL_Rect);
 
 		//finds tile at x/y coordinates and then returns
 		//the trait value for specified trait

@@ -139,18 +139,50 @@ void TileMap::initialize(std::string fileLocation, int mapHeight, int mapWidth, 
 
 
 
-void TileMap::drawTileMap()
+void TileMap::drawTileMap(SDL_Rect rect1)
 {
 	int tile = 0;
-	int orgX = x;
+	float tempX = -rect1.x;
+	float tempY = -rect1.y;
+	int orgX = tempX;
 	float adjBlockW = blockW*zoom;
 	float adjBlockH = blockH*zoom;
 
-	for (int h = 0; h<mapH; h++)
+	SDL_Rect screenRect = rect1;
+	screenRect.x += 0;
+	screenRect.w -= 0;
+	screenRect.y += 0;
+	screenRect.h -= 0;
+	
+	//figure out the elements you should be drawing
+	int tilesWide = screenRect.x/adjBlockW;
+	int tilesHigh = screenRect.y/adjBlockH;
+
+	int elementWidth = (screenRect.x+screenRect.w)/adjBlockW;
+	int elementHeight = (screenRect.y+screenRect.h)/adjBlockH;
+
+
+	int startingElement = tilesHigh*mapW + tilesWide;
+	int rowLength = tilesHigh*mapW + elementWidth+1;
+	int endElement = (elementHeight)*mapW + (elementWidth);
+
+	if (endElement >= tileMap.size())
+		endElement = tileMap.size()-1;
+	
+	tempX += tilesWide * adjBlockW;
+	orgX = tempX;
+
+	tempY += tilesHigh * adjBlockH;
+
+	
+	//draw elements
+	for (int i=startingElement; i<endElement; i+=mapW)
 	{
-		for (int w=0; w<mapW; w++)
+		for (int w = i; w<rowLength; w++) 
 		{
-			SDL_Rect blockRect = {x, y, adjBlockW+tilePad, adjBlockH+tilePad};
+			tile = w;
+
+			SDL_Rect blockRect = {tempX, tempY, adjBlockW+tilePad, adjBlockH+tilePad};
 
 			if (tileMap[tile] == 1)
 			{
@@ -169,13 +201,19 @@ void TileMap::drawTileMap()
 				SDL_RenderCopy(renderer, blocks[3]->gettileTexture(), NULL, &blockRect);
 			}
 
-			x += adjBlockW;
-			tile++;
+			tempX += adjBlockW;
 		}
 
-		x = orgX;
-		y += adjBlockH;
+		tempX = orgX;
+		tempY += adjBlockH;
+		rowLength += mapW;
+
+		if (i>= 300 && rect1.y>=140)
+		{
+			i =i;
+		}
 	}
+
 } //END draw()
 
 

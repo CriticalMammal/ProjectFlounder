@@ -44,10 +44,18 @@ TileMap theMap;
 
 int countedFrames = 8;
 double xOffset, yOffset, zoom;
-const int mapWidth = 50, mapHeight = 50;
+
 const int blockWidth = 20, blockHeight = 20;
+
+//the time it would take to cross from one side to another
+float minutes = 1;
+float mapWidthInMinutes = (3600/blockWidth)*minutes;
+float mapHeightInMinutes = (3600/blockHeight)*minutes;
+
+const int mapWidth = mapWidthInMinutes, mapHeight = mapHeightInMinutes;
 int mapWidthInPixels = mapWidth*(blockWidth);
 int mapHeightInPixels = mapHeight*(blockHeight);
+
 Uint32 startTime = 0;
 string timeText = "";
 bool keys[] = {false, false, false, false, false};
@@ -74,7 +82,7 @@ int main(int argc, char *args[])
 	int mouseX = 0, mouseY = 0;
 	xOffset = 0;
 	yOffset = 0;
-	zoom = 1;
+	zoom = 2;
 	srand(time(NULL));
 
 	player = new Player;
@@ -96,7 +104,7 @@ int main(int argc, char *args[])
 	}
 
 	//initialize tilemap
-	theMap.initialize("mapFile.txt", mapHeight, mapWidth, blockHeight, blockWidth, *renderer);
+	theMap.initialize("generate-new", mapHeight, mapWidth, blockHeight, blockWidth, *renderer);
 
 	
 	//randomly place items in game
@@ -129,8 +137,8 @@ int main(int argc, char *args[])
 	
 
 	//set non player position
-	nonPlayer->setX(382.93);
-	nonPlayer->setY(231.8);
+	nonPlayer->setX(80);
+	nonPlayer->setY(80);
 
 
 	//--------
@@ -312,7 +320,7 @@ int main(int argc, char *args[])
 		if (cameraTime >= camera.getCameraPause())
 		{
 			camera.newMoveToPoint(player);
-			//camera.newZoom(abs(1.5-(abs(player->getvy()/6+player->getvx()/6))));
+			camera.newZoom(2);
 			cameraTime = 0;
 		}
 		camera.scrollScreen();
@@ -392,7 +400,8 @@ int main(int argc, char *args[])
 		SDL_RenderClear(renderer);
 
 		//draw all the tiles
-		theMap.drawTileMap();
+		SDL_Rect screenRect = {xOffset, yOffset, xOffset+SCREEN_WIDTH, yOffset+SCREEN_HEIGHT};
+		theMap.drawTileMap(screenRect);
 		
 		//render player
 		player->draw();
