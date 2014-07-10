@@ -108,8 +108,8 @@ void Camera::scrollScreen()
 
 
 	//std::cout << distance << std::endl;
-	speed = distance / 100;
-	maxSpeed = distance / 10;
+	speed = distance / 60;
+	maxSpeed = distance / 5;
 
 	//test what directions to scroll screen
 	if (xOffset < moveToPointX - accuracy)		//too far left

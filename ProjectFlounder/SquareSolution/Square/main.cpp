@@ -72,8 +72,9 @@ void close();
 int main(int argc, char *args[])
 {
 	bool quit = false;
-	bool changeBlock = false, addItem = false, openPlayerInventory = false;
-	int cameraTime = 0, itemToUpdate = 0;;
+	bool changeBlock = false, addItem = false, openPlayerInventory = false,
+		 editMode = false;
+	int cameraTime = 0, itemToUpdate = 0;
 	int mouseX = 0, mouseY = 0;
 	xOffset = 0;
 	yOffset = 0;
@@ -177,8 +178,10 @@ int main(int argc, char *args[])
 					case SDLK_TAB:
 						keys[TAB] = true;
 						player->setInventoryOpen(!player->getInventoryOpen());
-						tileEditorMenu.setMenuOpen(!tileEditorMenu.getMenuOpen());
 						break;
+					case SDLK_i:
+						editMode = !editMode;
+						tileEditorMenu.setMenuOpen(!tileEditorMenu.getMenuOpen());
 				} //END switch(evt.key.keysym.sym)
 			}
 			else if (evt.type == SDL_KEYUP)
@@ -210,12 +213,20 @@ int main(int argc, char *args[])
 				if (evt.button.button == SDL_BUTTON_LEFT)
 				{
 					leftClick = true;
-					changeBlock = true;
+
+					if (editMode)
+					{
+						changeBlock = true;
+					}
 				}
 				else if (evt.button.button == SDL_BUTTON_RIGHT)
 				{
 					rightClick = true;
-					addItem = true;
+
+					if (editMode)
+					{
+						addItem = true;
+					}
 				}
 			}
 			else if (evt.type == SDL_MOUSEBUTTONUP)

@@ -107,6 +107,6 @@ void SideMenu::update()
 
 void SideMenu::draw()
 {
-	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+	SDL_SetRenderDrawColor(renderer, 150, 150, 150, 255);
 	SDL_RenderFillRect(renderer, &menuRect);
 }
