@@ -22,7 +22,9 @@
 #include "tile.h"
 #include "tileMap.h"
 #include "camera.h"
+#include "button.h"
 #include "sideMenu.h"
+#include "tileEditorMenu.h"
 
 using namespace std;
 
@@ -39,22 +41,27 @@ Camera camera;
 Player *player;
 NonPlayer *nonPlayer;
 
-SideMenu tileEditorMenu;
+TileEditorMenu tileEditorMenu;
 
 vector<Item*> items;
 
 TileMap theMap;
 
+
 int countedFrames = 8;
 double xOffset, yOffset, zoom;
+
 const int mapWidth = 50, mapHeight = 50;
 const int blockWidth = 20, blockHeight = 20;
 int mapWidthInPixels = mapWidth*(blockWidth);
 int mapHeightInPixels = mapHeight*(blockHeight);
+
 Uint32 startTime = 0;
 string timeText = "";
+
 bool keys[] = {false, false, false, false, false, false};
 bool leftClick = false, rightClick = false;
+int mouseX, mouseY;
 
 
 //function prototypes
@@ -75,7 +82,10 @@ int main(int argc, char *args[])
 	bool changeBlock = false, addItem = false, openPlayerInventory = false,
 		 editMode = false;
 	int cameraTime = 0, itemToUpdate = 0;
-	int mouseX = 0, mouseY = 0;
+
+	mouseX = 0;
+	mouseY = 0;
+
 	xOffset = 0;
 	yOffset = 0;
 	zoom = 1;
@@ -106,6 +116,8 @@ int main(int argc, char *args[])
 	//initialize tilemap
 	theMap.initialize("mapFile.txt", mapHeight, mapWidth, blockHeight, blockWidth, *renderer);
 
+	//initialize menus
+	tileEditorMenu.setTileImages(theMap.getBlocks());
 	
 	//randomly place items in game
 	items.push_back(new Item);
@@ -234,6 +246,7 @@ int main(int argc, char *args[])
 				if (evt.button.button == SDL_BUTTON_LEFT)
 				{
 					leftClick = false;
+					changeBlock = false;
 				}
 				else if (evt.button.button == SDL_BUTTON_RIGHT)
 				{
@@ -289,8 +302,28 @@ int main(int argc, char *args[])
 		}
 
 
+
+		//get mouse mouse clicks
+		SDL_GetMouseState(&mouseX, &mouseY);
+
+
 		//handle menus
 		tileEditorMenu.update();
+		tileEditorMenu.updateTileEditor();
+
+		//changes the tile that the mouse is hovering over
+		if (changeBlock && tileEditorMenu.getMenuMouseFocus() == false)
+		{
+			theMap.changeTileAt((mouseX+xOffset)/zoom, (mouseY+yOffset)/zoom, tileEditorMenu.getClickedButtonType());
+			//changeBlock = false;
+		}
+		if (addItem && tileEditorMenu.getMenuMouseFocus() == false)
+		{
+			items.push_back(new Item);
+			items.back()->setX((mouseX+xOffset)/zoom);
+			items.back()->setY((mouseY+yOffset)/zoom);
+			addItem = false;
+		}
 
 
 
@@ -375,20 +408,6 @@ int main(int argc, char *args[])
 		theMap.setY(-yOffset);
 
 
-		SDL_GetMouseState(&mouseX, &mouseY);
-		//changes the tile that the mouse is hovering over
-		if (changeBlock)
-		{
-			theMap.changeTileAt((mouseX+xOffset)/zoom, (mouseY+yOffset)/zoom);
-			changeBlock = false;
-		}
-		if (addItem)
-		{
-			items.push_back(new Item);
-			items.back()->setX((mouseX+xOffset)/zoom);
-			items.back()->setY((mouseY+yOffset)/zoom);
-			addItem = false;
-		}
 
 
 		//COLLISIONS
@@ -458,6 +477,7 @@ int main(int argc, char *args[])
 
 		//render menus
 		tileEditorMenu.draw();
+		tileEditorMenu.drawButtons();
 
 		
 		

@@ -354,20 +354,20 @@ bool TileMap::collisionDetect(SDL_Rect rect1, SDL_Rect rect2)
 
 
 
-void TileMap::changeTileAt(int x, int y)
+void TileMap::changeTileAt(int x, int y, int blockType)
 {
+	//check if the block type is valid
+	if (blockType+1 > blocks.size())
+	{
+		return;
+	}
+
+
 	int tileElement = getTileElementAt(x, y);
 
 	if (tileElement > 0 && tileElement < tileMap.size())
 	{
-		if (tileMap[tileElement] >= 4) //4 is the amt of diff blocks to cycle through
-		{
-			tileMap[tileElement] = 1;
-		}
-		else
-		{
-			tileMap[tileElement] += 1;
-		}
+		tileMap[tileElement] = blockType+1;
 	}
 }
 
