@@ -92,13 +92,6 @@ int main(int argc, char *args[])
 
 	srand((unsigned)time(NULL)); //seed random numbers
 
-	player = new Player;
-	nonPlayer = new NonPlayer;
-
-	camera.setfollowedObject(player);
-
-	vector<pathCoord> path;
-	vector<int> itemsUpdateList;
 
 	//Initialize SDL
 	if (!init())
@@ -112,6 +105,16 @@ int main(int argc, char *args[])
 		printf("Failed to load media\n");
 		return -1;
 	}
+
+
+	player = new Player;
+	nonPlayer = new NonPlayer;
+
+	camera.setfollowedObject(player);
+
+	vector<pathCoord> path;
+	vector<int> itemsUpdateList;
+
 
 	//initialize tilemap
 	theMap.initialize("mapFile.txt", mapHeight, mapWidth, blockHeight, blockWidth, *renderer);
