@@ -68,6 +68,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="button.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="item.cpp" />
     <ClCompile Include="leader.cpp" />
@@ -77,9 +78,11 @@
     <ClCompile Include="sideMenu.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="tile.cpp" />
+    <ClCompile Include="tileEditorMenu.cpp" />
     <ClCompile Include="tileMap.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="button.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="definitions.h" />
     <ClInclude Include="item.h" />
@@ -89,6 +92,7 @@
     <ClInclude Include="sideMenu.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="tile.h" />
+    <ClInclude Include="tileEditorMenu.h" />
     <ClInclude Include="tileMap.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
