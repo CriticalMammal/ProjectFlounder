@@ -178,6 +178,7 @@ void Player::update()
 	collisionVert.h = height;
 
 
+
 	//update inventory grid
 	inventoryX = x;
 	inventoryY = y;
@@ -213,12 +214,19 @@ void Player::draw()
 
 	SDL_RenderCopy(renderer, tempTexture, NULL, &playerRect);
 
+
+
+
+	//draw grid
 	SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
 
 	for (int i=0; i<inventoryCapacity; i++)
 	{
 		SDL_RenderDrawRect(renderer, &inventoryGrid[i]);
 	}
+
+
+
 
 	/*
 	//renders the collision rects
