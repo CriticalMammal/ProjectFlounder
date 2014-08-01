@@ -51,10 +51,6 @@ TileMap theMap;
 int countedFrames = 8;
 double xOffset, yOffset, zoom;
 
-<<<<<<< HEAD
-=======
-const int mapWidth = 50, mapHeight = 50;
->>>>>>> origin/feature-inventoryZoom
 const int blockWidth = 20, blockHeight = 20;
 
 //the time it would take to cross from one side to another
@@ -98,12 +94,8 @@ int main(int argc, char *args[])
 
 	xOffset = 0;
 	yOffset = 0;
-<<<<<<< HEAD
-	zoom = 2;
 	srand(time(NULL));
-=======
 	zoom = 1;
->>>>>>> origin/feature-inventoryZoom
 
 	srand((unsigned)time(NULL)); //seed random numbers
 
@@ -390,10 +382,6 @@ int main(int argc, char *args[])
 		cameraTime ++;
 		if (cameraTime >= camera.getCameraPause())
 		{
-<<<<<<< HEAD
-			camera.newMoveToPoint(player);
-			camera.newZoom(2);
-=======
 			if (player->getInventoryOpen())
 			{
 				//zoom very close into the player
@@ -419,7 +407,6 @@ int main(int argc, char *args[])
 				camera.newMoveToPoint(player, 0, 0);
 			}
 
->>>>>>> origin/feature-inventoryZoom
 			cameraTime = 0;
 		}
 

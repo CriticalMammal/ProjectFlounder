@@ -14,13 +14,12 @@ extern SDL_Renderer* renderer;
 
 Player::Player()
 {
-<<<<<<< HEAD
 	x = 60*zoom;
 	y = 60*zoom;
-=======
-	x = 210;
-	y = 330;
->>>>>>> origin/feature-inventoryZoom
+
+	//x = 210;
+	//y = 330;
+
 	width = 10;
 	height = 10;
 
