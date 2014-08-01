@@ -17,6 +17,7 @@ class TileMap
 		SDL_Texture* loadTexture(std::string, SDL_Surface*);
 		float randomNumber(float, float);
 		bool collisionDetect(SDL_Rect, SDL_Rect);
+		int getTileElementAt(int x, int y);
 		
 
 	public:
@@ -31,13 +32,15 @@ class TileMap
 		int getTileTraitAt(int x, int y, int trait);
 		SDL_Rect getTileRectAt(int x, int y);
 		bool checkCollision(SDL_Rect);
-		void changeTileAt(int x, int y);
+		void changeTileAt(int x, int y, int blockType);
 		std::vector<pathCoord> pathFind(double startX, double startY, double endX, double endY);
 		void saveMapFile();
 
 
 		void setX(int newX) {x = newX;}
 		void setY(int newY) {y = newY;}
+
+		std::vector<Tile*> getBlocks() {return blocks;}
 };
 
 #endif

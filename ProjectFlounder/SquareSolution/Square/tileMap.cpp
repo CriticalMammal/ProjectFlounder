@@ -105,7 +105,7 @@ void TileMap::initialize(std::string fileLocation, int mapHeight, int mapWidth, 
 	//make all recently read tiles into textures and free surfaces
 	for (int i=0; i<blockSurface.size(); i++)
 	{
-		SDL_Texture *tempTexture = loadTexture("empty string", blockSurface[i]);
+		SDL_Texture *tempTexture = loadTexture("emptyString", blockSurface[i]);
 		blocks.push_back(new Tile);
 		blocks.back()->settileTexture(tempTexture);
 
@@ -131,7 +131,7 @@ void TileMap::initialize(std::string fileLocation, int mapHeight, int mapWidth, 
 
 	tileTraitFile.close();
 
-	for (int i=0; i<blockSurface.size(); i++) //bleh, copy pasted for loop from above
+	for (int i=blockSurface.size()-1; i<=0; i=blockSurface.size()-1)
 	{
 		SDL_FreeSurface(blockSurface[i]);
 	}
@@ -235,7 +235,7 @@ void TileMap::saveMapFile()
 
 
 
-int TileMap::getTileTraitAt(int x, int y, int trait)
+int TileMap::getTileElementAt(int x, int y)
 {
 	//If you divide the coordinates by the width/height of each tile...
 	//you should be able to find out the element it would be in the vector
@@ -244,6 +244,15 @@ int TileMap::getTileTraitAt(int x, int y, int trait)
 
 	//each tilesHigh will be an entire row of tiles, aka the mapW
 	int tileElement = tilesHigh*mapW + tilesWide;
+
+	return tileElement;
+}
+
+
+
+int TileMap::getTileTraitAt(int x, int y, int trait)
+{
+	int tileElement = getTileElementAt(x, y);
 
 	if (tileElement > 0 && tileElement < tileMap.size())
 	{
@@ -383,25 +392,20 @@ bool TileMap::collisionDetect(SDL_Rect rect1, SDL_Rect rect2)
 
 
 
-void TileMap::changeTileAt(int x, int y)
+void TileMap::changeTileAt(int x, int y, int blockType)
 {
-	
-	int tilesWide = x/blockW;
-	int tilesHigh = y/blockH;
+	//check if the block type is valid
+	if (blockType+1 > blocks.size())
+	{
+		return;
+	}
 
-	int tileElement = tilesHigh*mapW + tilesWide;
 
+	int tileElement = getTileElementAt(x, y);
 
 	if (tileElement > 0 && tileElement < tileMap.size())
 	{
-		if (tileMap[tileElement] >= 4) //4 is the amt of diff blocks to cycle through
-		{
-			tileMap[tileElement] = 1;
-		}
-		else
-		{
-			tileMap[tileElement] += 1;
-		}
+		tileMap[tileElement] = blockType+1;
 	}
 }
 
@@ -411,15 +415,10 @@ vector<pathCoord> TileMap::pathFind(double startX, double startY, double endX, d
 {
 	//first let's figure out the tile array elements for the start and end
 	//that way you can create a path based on the tile positions
-	int tilesWide = startX/blockW;
-	int tilesHigh = startY/blockH;
+	int startTileElement = getTileElementAt(startX, startY);
 
-	int startTileElement = tilesHigh*mapW + tilesWide;
+	int endTileElement = getTileElementAt(endX, endY);
 
-	tilesWide = endX/blockW;
-	tilesHigh = endY/blockH;
-
-	int endTileElement = tilesHigh*mapW + tilesWide;
 
 	//create lists/vectors to store the path data
 	//pathTile and pathCoord are structs created in definitions.h

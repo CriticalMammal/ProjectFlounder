@@ -22,6 +22,9 @@
 #include "tile.h"
 #include "tileMap.h"
 #include "camera.h"
+#include "button.h"
+#include "sideMenu.h"
+#include "tileEditorMenu.h"
 
 using namespace std;
 
@@ -38,13 +41,20 @@ Camera camera;
 Player *player;
 NonPlayer *nonPlayer;
 
+TileEditorMenu tileEditorMenu;
+
 vector<Item*> items;
 
 TileMap theMap;
 
+
 int countedFrames = 8;
 double xOffset, yOffset, zoom;
 
+<<<<<<< HEAD
+=======
+const int mapWidth = 50, mapHeight = 50;
+>>>>>>> origin/feature-inventoryZoom
 const int blockWidth = 20, blockHeight = 20;
 
 //the time it would take to cross from one side to another
@@ -58,8 +68,10 @@ int mapHeightInPixels = mapHeight*(blockHeight);
 
 Uint32 startTime = 0;
 string timeText = "";
-bool keys[] = {false, false, false, false, false};
+
+bool keys[] = {false, false, false, false, false, false};
 bool leftClick = false, rightClick = false;
+int mouseX, mouseY;
 
 
 //function prototypes
@@ -69,7 +81,7 @@ SDL_Texture* loadTexture(std::string path);
 SDL_Texture* renderText(const std::string &message, const std::string &fontLocation, 
 						SDL_Color color, int fontSize);
 bool collisionDetect(SDL_Rect rect1, SDL_Rect rect2);
-float randomNumber(float, float);
+double randomNumber(double, double);
 void close();
 
 
@@ -77,18 +89,24 @@ void close();
 int main(int argc, char *args[])
 {
 	bool quit = false;
-	bool changeBlock = false, addItem = false;
-	int cameraTime = 0;
-	int mouseX = 0, mouseY = 0;
+	bool changeBlock = false, addItem = false, openPlayerInventory = false,
+		 editMode = false;
+	int cameraTime = 0, itemToUpdate = 0;
+
+	mouseX = 0;
+	mouseY = 0;
+
 	xOffset = 0;
 	yOffset = 0;
+<<<<<<< HEAD
 	zoom = 2;
 	srand(time(NULL));
+=======
+	zoom = 1;
+>>>>>>> origin/feature-inventoryZoom
 
-	player = new Player;
-	nonPlayer = new NonPlayer;
+	srand((unsigned)time(NULL)); //seed random numbers
 
-	vector<pathCoord> path;
 
 	//Initialize SDL
 	if (!init())
@@ -103,24 +121,36 @@ int main(int argc, char *args[])
 		return -1;
 	}
 
+
+	player = new Player;
+	nonPlayer = new NonPlayer;
+
+	camera.setfollowedObject(player);
+
+	vector<pathCoord> path;
+	vector<int> itemsUpdateList;
+
+
 	//initialize tilemap
 	theMap.initialize("generate-new", mapHeight, mapWidth, blockHeight, blockWidth, *renderer);
 
+	//initialize menus
+	tileEditorMenu.setTileImages(theMap.getBlocks());
 	
 	//randomly place items in game
 	items.push_back(new Item);
-	items[0]->setX(1000);
-	items[0]->setY(1000);
+	items[0]->setX(-1000);
+	items[0]->setY(-1000);
 
 	int itemAmt = 200;
 	for (int i=0; i<itemAmt; i++)
 	{
-		int itemX = randomNumber(blockWidth, mapWidthInPixels);
-		int itemY = randomNumber(blockHeight, mapWidthInPixels);
+		double itemX = randomNumber(blockWidth, mapWidthInPixels);
+		double itemY = randomNumber(blockHeight, mapWidthInPixels);
 		int width = items[0]->getWidth();
 		int height = items[0]->getHeight();
 		
-		SDL_Rect itemRect = {itemX, itemY, width, height};
+		SDL_Rect itemRect = {int(itemX), int(itemY), width, height};
 
 		while (theMap.checkCollision(itemRect))
 		{
@@ -175,6 +205,13 @@ int main(int argc, char *args[])
 					case SDLK_c:
 						keys[c] = true;
 						break;
+					case SDLK_TAB:
+						keys[TAB] = true;
+						player->setInventoryOpen(!player->getInventoryOpen());
+						break;
+					case SDLK_i:
+						editMode = !editMode;
+						tileEditorMenu.setMenuOpen(!tileEditorMenu.getMenuOpen());
 				} //END switch(evt.key.keysym.sym)
 			}
 			else if (evt.type == SDL_KEYUP)
@@ -196,6 +233,9 @@ int main(int argc, char *args[])
 					case SDLK_c:
 						keys[c] = false;
 						break;
+					case SDLK_TAB:
+						keys[TAB] = false;
+						break;
 				}
 			}
 			else if (evt.type == SDL_MOUSEBUTTONDOWN)
@@ -203,12 +243,20 @@ int main(int argc, char *args[])
 				if (evt.button.button == SDL_BUTTON_LEFT)
 				{
 					leftClick = true;
-					changeBlock = true;
+
+					if (editMode)
+					{
+						changeBlock = true;
+					}
 				}
 				else if (evt.button.button == SDL_BUTTON_RIGHT)
 				{
 					rightClick = true;
-					addItem = true;
+
+					if (editMode)
+					{
+						addItem = true;
+					}
 				}
 			}
 			else if (evt.type == SDL_MOUSEBUTTONUP)
@@ -216,6 +264,7 @@ int main(int argc, char *args[])
 				if (evt.button.button == SDL_BUTTON_LEFT)
 				{
 					leftClick = false;
+					changeBlock = false;
 				}
 				else if (evt.button.button == SDL_BUTTON_RIGHT)
 				{
@@ -271,15 +320,36 @@ int main(int argc, char *args[])
 		}
 
 
-		//handle items
-		//BE CAREFUL TO REMEMBER AND CREATE
-		//individual timers for each instance of an item
-		//rather than basing it off of the cameraTime!!!!
+
+		//get mouse mouse clicks
+		SDL_GetMouseState(&mouseX, &mouseY);
+
+
+		//handle menus
+		tileEditorMenu.update();
+		tileEditorMenu.updateTileEditor();
+
+		//changes the tile that the mouse is hovering over
+		if (changeBlock && tileEditorMenu.getMenuMouseFocus() == false)
+		{
+			theMap.changeTileAt((mouseX+xOffset)/zoom, (mouseY+yOffset)/zoom, tileEditorMenu.getClickedButtonType());
+			//changeBlock = false;
+		}
+		if (addItem && tileEditorMenu.getMenuMouseFocus() == false)
+		{
+			items.push_back(new Item);
+			items.back()->setX((mouseX+xOffset)/zoom);
+			items.back()->setY((mouseY+yOffset)/zoom);
+			addItem = false;
+		}
+
+
+
+		//HANDLE ITEMS
 		for (int i=0; i<items.size(); i++)
 		{
-			if (cameraTime >= items[i]->getPauseInterval())
+			if (items[i]->getUpdateFlag())
 			{
-				
 				if (collisionDetect(player->getCollisionRect(), items[i]->getCollisionRect()))
 				{
 					items[i]->newMoveToPoint(player);
@@ -295,14 +365,14 @@ int main(int argc, char *args[])
 			if (items[i]->getItemCollected())
 			{
 				Leader *leaderCollector = items[i]->getfollowedSprite();
-				int currentItemID = items[i]->getItemID();
-				int heldItems = leaderCollector->getItemsHeld(currentItemID);
+				int currentitemType = items[i]->getitemType();
+				int heldItems = leaderCollector->getItemsHeld(currentitemType);
 
 				//add item to followed object
-				leaderCollector->setItemsHeld(heldItems + 1, currentItemID);
+				leaderCollector->setItemsHeld(heldItems + 1, currentitemType);
 				system("cls");
-				cout << "player items: " << player->getItemsHeld(currentItemID) << endl;
-				cout << "npc items:    " << nonPlayer->getItemsHeld(currentItemID) << endl;
+				cout << "player items: " << player->getItemsHeld(currentitemType) << endl;
+				cout << "npc items:    " << nonPlayer->getItemsHeld(currentitemType) << endl;
 
 				//remove item
 				items[i]->~Item();
@@ -311,7 +381,8 @@ int main(int argc, char *args[])
 			}
 		}
 
-		//handle camera
+
+		//HANDLE CAMERA
 		mapWidthInPixels = mapWidth*(blockWidth*zoom);
 		mapHeightInPixels = mapHeight*(blockHeight*zoom);
 
@@ -319,10 +390,39 @@ int main(int argc, char *args[])
 		cameraTime ++;
 		if (cameraTime >= camera.getCameraPause())
 		{
+<<<<<<< HEAD
 			camera.newMoveToPoint(player);
 			camera.newZoom(2);
+=======
+			if (player->getInventoryOpen())
+			{
+				//zoom very close into the player
+				camera.setZoomVelocity(0);
+				camera.newZoom(40, 0.001, 0.2, 0.01);
+
+				camera.setAccuracy(5);
+				camera.setMotion(0);
+				camera.setFriction(0.8);
+
+				camera.newMoveToPoint(player, 2, 0);
+			}
+			else
+			{
+				//normal camera movement etc
+				camera.setZoomVelocity(0);
+				camera.newZoom(2.5, 0.001, 0.2, 0.01);
+
+				camera.setAccuracy(5);
+				camera.setMotion(0);
+				camera.setFriction(0.8);
+
+				camera.newMoveToPoint(player, 0, 0);
+			}
+
+>>>>>>> origin/feature-inventoryZoom
 			cameraTime = 0;
 		}
+
 		camera.scrollScreen();
 		
 		
@@ -331,20 +431,6 @@ int main(int argc, char *args[])
 		theMap.setY(-yOffset);
 
 
-		SDL_GetMouseState(&mouseX, &mouseY);
-		//changes the tile that the mouse is hovering over
-		if (changeBlock)
-		{
-			theMap.changeTileAt((mouseX+xOffset)/zoom, (mouseY+yOffset)/zoom);
-			changeBlock = false;
-		}
-		if (addItem)
-		{
-			items.push_back(new Item);
-			items.back()->setX((mouseX+xOffset)/zoom);
-			items.back()->setY((mouseY+yOffset)/zoom);
-			addItem = false;
-		}
 
 
 		//COLLISIONS
@@ -377,7 +463,7 @@ int main(int argc, char *args[])
 			}
 		}
 
-		/*
+		
 		//UPDATE TEXT
 		
 		//set text
@@ -390,7 +476,7 @@ int main(int argc, char *args[])
 		SDL_QueryTexture(text, NULL, NULL, &textW, &textH);
 		int textX = SCREEN_WIDTH/2 - textW/2;
 		int textY = SCREEN_HEIGHT/2 - textH/2;
-		*/
+		
 
 		//------
 		//RENDER
@@ -413,9 +499,14 @@ int main(int argc, char *args[])
 			items[i]->draw();
 		}
 
+		//render menus
+		tileEditorMenu.draw();
+		tileEditorMenu.drawButtons();
+
 		
-		/*
+		
 		//render camera focus point
+		/*
 		SDL_Rect cameraPoint = {(camera.getMoveToPointX()+SCREEN_WIDTH/2)-xOffset-1, (camera.getMoveToPointY()+SCREEN_HEIGHT/2)-yOffset-1, 2, 2}; 
 		SDL_SetRenderDrawColor(renderer, 255, 0, 255, 255);
 		SDL_RenderFillRect(renderer, &cameraPoint);
@@ -425,8 +516,15 @@ int main(int argc, char *args[])
 		SDL_RenderDrawRect(renderer, &accuracyBox);
 		*/
 
+		//render fly on the screen
+		/*
+		SDL_Rect marker = {300, 400, 2, 2};
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+		SDL_RenderFillRect(renderer, &marker);
+		*/
+
 		//render text
-		//SDL_RenderCopy(renderer, text, NULL, &textRect);
+		SDL_RenderCopy(renderer, text, NULL, &textRect);
 
 		SDL_RenderPresent(renderer);
 		countedFrames++;
@@ -580,9 +678,9 @@ bool collisionDetect(SDL_Rect rect1, SDL_Rect rect2)
 
 //come up with a better solution to distribute the random
 //numbers evenly. rand() doesn't evenly distribute!
-float randomNumber(float Min, float Max)
+double randomNumber(double Min, double Max)
 {
-    return ((float(rand()) / float(RAND_MAX)) * (Max - Min)) + Min;
+    return ((double(rand()) / double(RAND_MAX)) * (Max - Min)) + Min;
 }
 
 

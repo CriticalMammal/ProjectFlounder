@@ -153,6 +153,6 @@ void NonPlayer::setPathCoordinates(std::vector<pathCoord> pathIn)
 
 void NonPlayer::draw()
 {
-	SDL_SetRenderDrawColor(renderer, 100, 50, 50, 255);
+	SDL_SetRenderDrawColor(renderer, 0, 180, 180, 255);
 	SDL_RenderFillRect(renderer, &nonPlayerRect);
 }

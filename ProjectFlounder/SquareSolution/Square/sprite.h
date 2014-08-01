@@ -12,7 +12,7 @@ class Sprite
 		double x, y, midX, midY, oldX, oldY, vx, vy,
 			  speed, friction, maxSpeed,
 			  oldMaxSpeed;
-		double width, height, orgWidth, orgHeight;
+		int width, height, orgWidth, orgHeight;
 		SDL_Rect collisionRect;
 		SDL_Rect collisionVert;
 		SDL_Rect collisionHorz;
@@ -21,15 +21,15 @@ class Sprite
 		Sprite();
 		~Sprite();
 
-		double getX(){return x;}
-		double getY(){return y;}
+		double getX() {return x;}
+		double getY() {return y;}
 		double getOldX() {return oldX;}
 		double getOldY() {return oldY;}
 		double getMidX() {return x + 0.5f*width;}
 		double getMidY() {return y + 0.5f*height;}
-		double getSpeed(){return speed;}
-		int getWidth(){return width;}
-		int getHeight(){return height;}
+		double getSpeed() {return speed;}
+		int getWidth() {return width;}
+		int getHeight() {return height;}
 		double getvx() {return vx;}
 		double getvy() {return vy;}
 		SDL_Rect getCollisionRect() {return collisionRect;}

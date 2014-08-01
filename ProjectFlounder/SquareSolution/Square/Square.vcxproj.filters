@@ -42,6 +42,15 @@
     <ClCompile Include="leader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="sideMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="button.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="tileEditorMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="definitions.h">
@@ -69,6 +78,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="leader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sideMenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="button.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="tileEditorMenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
